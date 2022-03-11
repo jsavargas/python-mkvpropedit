@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  mkvpropedit:
+    container_name: mkvpropedit
+    build:
+        context: .
+        dockerfile: ./Dockerfile
+    environment:
+      - FLASK_ENV=development
+    volumes:
+      - ./mkvtoolnix:/app
+      - /mnt/user/media/torrent/_temp:/media
+    ports:
+      - "5000:5000"
