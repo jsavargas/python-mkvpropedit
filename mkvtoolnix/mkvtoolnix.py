@@ -47,7 +47,7 @@ print("")
 #print(command)
 
 print("mkvpropedit --tags all: --delete title {} {}".format("".join(command),mediafile))
-mkvpropedit = "mkvpropedit --tags all: --delete title --delete-attachment mime-type:image/jpeg --edit track:v1 --delete name {} {}".format("".join(command),mediafile)
+mkvpropedit = "mkvpropedit --tags all: --delete title --delete-attachment mime-type:image/jpeg --edit track:v1 --delete name {} '{}'".format("".join(command),mediafile)
 print(os.system(mkvpropedit))
 
 
