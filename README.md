@@ -14,5 +14,11 @@ find /path/files/ -iname "*mkv" -exec python3 mkvtoolnix.py {} \;
 
 ## MODO DE USO DOCKER
 
+
+```bash
+
 docker-compose run --rm mkvpropedit sh
 
+docker run --rm -it -v "$(pwd):/tmp" jsavargas/mkvpropedit:latest find /tmp -iname "*mkv" -exec python3 mkvtoolnix.py {} \;
+ 
+ ```
