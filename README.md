@@ -7,6 +7,12 @@ mkvpropedit --tags all: --delete title --edit track:a1 --delete name --edit trac
 
 ```
 ![](images/ss01.png)
+
+### Antes 
+![](images/ss_antes.png)
+
+### despues
+![](images/ss_despues.png)
 ## MODO DE USO
 
 
