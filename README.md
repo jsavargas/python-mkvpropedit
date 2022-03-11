@@ -5,6 +5,7 @@
 
 python3 mkvtoolnix.py file.mkv
 
+find /path/files/ -iname "*mkv" -exec python3 mkvtoolnix.py {} \;
 
 ## MODO DE USO DOCKER
 
