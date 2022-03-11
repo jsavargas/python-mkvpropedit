@@ -6,7 +6,7 @@ services:
         context: .
         dockerfile: ./Dockerfile
     environment:
-      - FLASK_ENV=development
+      - development=development
     volumes:
       - ./mkvtoolnix:/app
       - /mnt/user/media/torrent/_temp:/media
