@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from pprint import pprint
 from pymediainfo import MediaInfo
 
