@@ -6,7 +6,6 @@ mkvpropedit --tags all: --delete title --edit track:a1 --delete name --edit trac
 
 
 ```
-![](images/ss01.png)
 
 ### Antes 
 ![](images/ss_antes.png)
@@ -18,9 +17,10 @@ mkvpropedit --tags all: --delete title --edit track:a1 --delete name --edit trac
 
 ```bash
 
-python3 mkvtoolnix.py file.mkv
+python3 mkvdelspam.py file.mkv
 
-find /path/files/ -iname "*mkv" -exec python3 mkvtoolnix.py {} \;
+find /path/files/ -iname "*mkv" -exec python3 mkvdelspam.py {} \;
+find /path/files/ -iname "*mkv" -exec mkvdelspam {} \;
 
 ```
 
@@ -31,6 +31,6 @@ find /path/files/ -iname "*mkv" -exec python3 mkvtoolnix.py {} \;
 
 docker-compose run --rm mkvpropedit sh
 
-docker run --rm -it -v "$(pwd):/tmp" jsavargas/mkvpropedit:latest find /tmp -iname "*mkv" -exec python3 mkvtoolnix.py {} \;
+docker run --rm -it -v "$(pwd):/tmp" jsavargas/mkvpropedit:latest find /tmp -iname "*mkv" -exec  mkvdelspam {} \;
  
  ```
