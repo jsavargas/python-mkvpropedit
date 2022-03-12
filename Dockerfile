@@ -10,8 +10,8 @@ COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY ./mkvtoolnix /app/
-COPY ./mkvtoolnix/mkvtoolnix.py /bin/mkvtoolnix
-RUN chmod +x /bin/mkvtoolnix
+COPY ./mkvtoolnix/mkvtoolnix.py /usr/local/bin/mkvdelspam
+RUN chmod +x /usr/local/bin/mkvdelspam
 
 
 WORKDIR /app
