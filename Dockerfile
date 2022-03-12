@@ -9,8 +9,8 @@ RUN add-pkg \
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-COPY ./mkvtoolnix /app/
-COPY ./mkvtoolnix/mkvtoolnix.py /usr/local/bin/mkvdelspam
+COPY ./mkvdelspam /app/
+COPY ./mkvdelspam/mkvdelspam.py /usr/local/bin/mkvdelspam
 RUN chmod +x /usr/local/bin/mkvdelspam
 
 
