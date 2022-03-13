@@ -55,7 +55,7 @@ if flag_pymediainfo:
     print("")
     #print(command)
 
-    mkvpropedit = "mkvpropedit --tags all: --delete title --delete-attachment mime-type:image/jpeg --delete-attachment 1  {} '{}'".format("".join(command),mediafile)
+    mkvpropedit = 'mkvpropedit --tags all: --delete title --delete-attachment mime-type:image/jpeg --delete-attachment 1  {} "{}"'.format("".join(command),mediafile)
     print(mkvpropedit)
     print(os.system(mkvpropedit))
 
@@ -63,13 +63,13 @@ if flag_pymediainfo:
     print("")
     #print(os.system(f"mediainfo {mediafile}"))
 else:
-    mediaInfo = os.system("mediainfo {mediafile}".format(mediafile=mediafile))
+    mediaInfo = os.system('mediainfo "{mediafile}"'.format(mediafile=mediafile))
     print("mediaInfo",mediaInfo)
 
     print("*" *80)
     print("*" *80)
 
-    proc = subprocess.Popen("mediainfo '{mediafile}'".format(mediafile=mediafile), shell=True, stdout=subprocess.PIPE)
+    proc = subprocess.Popen('mediainfo "{mediafile}"'.format(mediafile=mediafile), shell=True, stdout=subprocess.PIPE)
 
     command = []
     audio = 0
@@ -95,7 +95,8 @@ else:
 
 
     command.append(' --edit track:v1 --delete name ')
-    mkvpropedit = "mkvpropedit --tags all: --delete title --delete-attachment mime-type:image/jpeg --delete-attachment 1 {} '{}'".format("".join(command),mediafile)
+    mkvpropedit = 'mkvpropedit --tags all: --delete title --delete-attachment mime-type:image/jpeg --delete-attachment 1 {} "{}"'.format("".join(command),mediafile)
+
     print(mkvpropedit)
 
     print(os.system(mkvpropedit))
