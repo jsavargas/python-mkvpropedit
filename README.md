@@ -17,6 +17,8 @@ mkvpropedit --tags all: --delete title --edit track:a1 --delete name --edit trac
 
 ```bash
 
+sudo curl -L https://raw.githubusercontent.com/jsavargas/python-mkvpropedit/master/mkvdelspam/mkvdelspam.py -o /usr/local/bin/mkvdelspam && sudo chmod +x /usr/local/bin/mkvdelspam
+
 python3 mkvdelspam.py file.mkv
 
 find /path/files/ -iname "*mkv" -exec python3 mkvdelspam.py {} \;
