@@ -34,3 +34,17 @@ docker-compose run --rm mkvpropedit sh
 docker run --rm -it -v "$(pwd):/tmp" jsavargas/mkvpropedit:latest find /tmp -iname "*mkv" -exec  mkvdelspam {} \;
  
  ```
+
+## **Requirements:**
+- python3
+- mediainfo
+- mkvtoolnix
+
+## **Changelog:**
+
+**v1.1 (13/03/2022/):**
+- Update mkvdelspam.py
+- Fixed bugs
+- Added more bugs to fix later
+- Support for versions without pymediainfo
+
