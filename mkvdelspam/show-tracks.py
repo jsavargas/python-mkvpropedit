@@ -47,10 +47,6 @@ if flag_pymediainfo:
     print("")
     print("")
 else:
-
-    print("*" *80)
-    print("*" *80)
-
     proc = subprocess.Popen('mediainfo "{mediafile}"'.format(mediafile=mediafile), shell=True, stdout=subprocess.PIPE)
 
     command = []
@@ -69,7 +65,8 @@ else:
         if re.search('^Language', line.decode()):
             print(line.decode().replace('\n','') )
 
-    print("\n")
+    print("")
+    print("")
 
 
 
