@@ -33,8 +33,9 @@ find /path/files/ -iname "*mkv" -exec mkvdelspam {} \;
 
 docker-compose run --rm mkvpropedit sh
 
-docker run --rm -it -v "$(pwd):/tmp" jsavargas/mkvpropedit:latest find /tmp -iname "*mkv" -exec  mkvdelspam {} \;
- 
+docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest sh
+docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest find /tmp -iname "*mkv" -exec  mkvdelspam {} \;
+docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest find /tmp -iname "*mkv" -exec  show-tracks {} \;
  ```
 
 ## **Requirements:**
