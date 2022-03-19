@@ -30,7 +30,7 @@ def parse_args():
     
     parser.add_argument('--print_args', action='store_true', help='dev use, print arguments')
 
-    parser.add_argument('--set_moviename_filename', action='store_true', help='Set filename to movie title')
+    parser.add_argument('--set_moviename_filename', action='store_true', help='Set filename to movie name')
     parser.add_argument('--set_videotitle_filename', action='store_true', help='Set filename to video title')
     
     parser.add_argument('--del_movie_name', action='store_true', help='require mkvpropedit* delete movie name')
