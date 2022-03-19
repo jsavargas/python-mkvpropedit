@@ -157,8 +157,6 @@ def tools(args, finish=False):
 
 
 
-def VERSION():
-    print(VERSION)
 
 if __name__ == '__main__':
 
@@ -166,7 +164,6 @@ if __name__ == '__main__':
         args = parse_args()
         
         if args.print_args: print(args)
-        if args.version: VERSION()
 
         tools(args)
 
