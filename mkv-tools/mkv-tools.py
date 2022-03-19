@@ -11,7 +11,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.5"
+__version__ = "VERSION 1.0.6"
 
 
 def parse_args():
@@ -30,12 +30,12 @@ def parse_args():
     
     parser.add_argument('--print_args', action='store_true', help='dev use, print arguments')
 
-    parser.add_argument('--set_title_filename', action='store_true', help='Set filename to movie tittle')
-    parser.add_argument('--set_videotitle_filename', action='store_true', help='Set filename to video tittle')
+    parser.add_argument('--set_moviename_filename', action='store_true', help='Set filename to movie title')
+    parser.add_argument('--set_videotitle_filename', action='store_true', help='Set filename to video title')
     
     parser.add_argument('--del_movie_name', action='store_true', help='require mkvpropedit* delete movie name')
 
-    parser.add_argument('--set_video_title', type=str, help='require mkvpropedit* replace text in movie name')
+    parser.add_argument('--replace_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
     parser.add_argument('--replace_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
 
 
@@ -112,7 +112,7 @@ def tools(args, finish=False):
             print("\n\n")
             return
 
-        if args.set_title_filename:
+        if args.set_moviename_filename:
             pattern = re.compile(".mkv", re.IGNORECASE)
             new_name = pattern.sub("", os.path.basename(args.file))
 
