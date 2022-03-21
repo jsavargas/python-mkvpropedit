@@ -84,6 +84,8 @@ docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest find /tmp 
 - Added delete subtitles title 
 - Added delete all tracks title 
 - Added more bugs to fix later (?)
+- Added delete text in audio titile
+- Added delete text in subtitles titile
 
 **v1.0.8 (21/03/2022/):**
 - Update mkv-tools.py
