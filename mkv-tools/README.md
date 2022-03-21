@@ -78,6 +78,13 @@ docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest find /tmp 
 
 ## **Changelog:**
 
+**v1.0.9 (21/03/2022/):**
+- Update mkv-tools.py
+- Added delete audio titile 
+- Added delete subtitles title 
+- Added delete all tracks title 
+- Added more bugs to fix later (?)
+
 **v1.0.8 (21/03/2022/):**
 - Update mkv-tools.py
 - Added delete movie name 
@@ -85,7 +92,7 @@ docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest find /tmp 
 - Added delete attachments 
 - Added delete text in movie name
 - Added delete text in video title
-- Added more bugs to fix later (?)
+- Fixed bugs
 
 **v1.0.7 (20/03/2022/):**
 - Update mkv-tools.py

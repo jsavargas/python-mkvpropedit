@@ -11,7 +11,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.8"
+__version__ = "VERSION 1.0.9"
 
 
 def parse_args():
@@ -36,7 +36,10 @@ def parse_args():
     
     parser.add_argument('--delete_movie_name', action='store_true', help='delete movie name')
     parser.add_argument('--delete_video_title', action='store_true', help='delete video title')
+    parser.add_argument('--delete_audio_title', action='store_true', help='delete attachments')
+    parser.add_argument('--delete_subs_title', action='store_true', help='delete attachments')
     parser.add_argument('--delete_attachment', action='store_true', help='delete attachments')
+    parser.add_argument('--delete_tracks', action='store_true', help='delete attachments')
 
     parser.add_argument('-dtmn', '--delete_text_movie_name', type=str, help='replace text in movie name')
     parser.add_argument('-dtvt', '--delete_text_video_title', type=str, help='replace text in video title') #TODO get video title y replace string
@@ -117,14 +120,20 @@ def tools(args, finish=False):
                 #if args.show_tracks: print(line.decode().replace('\n','') )
             
             if re.search('^Title', line.decode()):
-                if args.show_tracks: 
-                    if text>0:
-                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
-                    elif audio>0:
-                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
-                    elif video>0:
-                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
-                        if args.delete_text_video_title: tag_video_title = line.decode().replace('\n','') 
+                if text>0:
+                    if args.show_tracks: print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    if args.delete_subs_title or args.delete_tracks:
+                        command.append(f'--edit track:s{text} --delete name ')
+                        run = True
+                elif audio>0:
+                    if args.show_tracks: print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    if args.delete_audio_title or args.delete_tracks:
+                        command.append(f'--edit track:a{audio} --delete name ')
+                        run = True
+
+                elif video>0:
+                    if args.show_tracks: print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    if args.delete_text_video_title: tag_video_title = line.decode().replace('\n','') 
 
 
             if re.search('^Language', line.decode()):
@@ -165,13 +174,13 @@ def tools(args, finish=False):
             _tag_video_title = re.sub('^(.+?):\s?', '\1', tag_video_title)
             command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text_video_title,'')))
             run = True
-        if args.delete_movie_name:
+        if args.delete_movie_name or args.delete_tracks:
             command.append(' --delete title ')
             run = True
-        if args.delete_video_title:
+        if args.delete_video_title or args.delete_tracks:
             command.append(' --edit track:v1 --delete name ')
             run = True
-        if args.delete_attachment:
+        if args.delete_attachment or args.delete_tracks:
             command.append(' --delete-attachment mime-type:image/jpeg --delete-attachment 1 ')
             run = True
 
