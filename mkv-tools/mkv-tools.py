@@ -11,7 +11,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.7"
+__version__ = "VERSION 1.0.8"
 
 
 def parse_args():
@@ -31,13 +31,15 @@ def parse_args():
     
     parser.add_argument('--print_args', action='store_true', help='dev use, print arguments')
 
-    parser.add_argument('--set_moviename_filename', action='store_true', help='Set filename to movie name')
-    parser.add_argument('--set_videotitle_filename', action='store_true', help='Set filename to video title')
+    parser.add_argument('-smnf', '--set_moviename_filename', action='store_true', help='Set filename to movie name')
+    parser.add_argument('-svtf', '--set_videotitle_filename', action='store_true', help='Set filename to video title')
     
-    parser.add_argument('--del_movie_name', action='store_true', help='require mkvpropedit* delete movie name')
+    parser.add_argument('--delete_movie_name', action='store_true', help='require mkvpropedit* delete movie name')
+    parser.add_argument('--delete_video_title', action='store_true', help='require mkvpropedit* delete video title')
+    parser.add_argument('--delete_attachment', action='store_true', help='require mkvpropedit* delete attachments')
 
-    parser.add_argument('-dtmn', '--deltext_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
-    parser.add_argument('-dtvt', '--deltext_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
+    parser.add_argument('-dtmn', '--delete_text_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
+    parser.add_argument('-dtvt', '--delete_text_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
     #parser.add_argument('--replace_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
     #parser.add_argument('--replace_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
 
@@ -92,8 +94,8 @@ def tools(args, finish=False):
             if re.search('^Movie name', line.decode()):
                 if args.show_tracks: print(line.decode().replace('\n','') )
                 elif args.show_movie_name: print(line.decode().replace('\n','') )
-                elif args.deltext_movie_name: print(line.decode().replace('\n','') )
-                if args.deltext_movie_name:
+                elif args.delete_text_movie_name: print(line.decode().replace('\n','') )
+                if args.delete_text_movie_name:
                     tag_movie_name = line.decode().replace('\n','') 
 
             
@@ -123,6 +125,9 @@ def tools(args, finish=False):
                         print("{} >> {}".format(head, line.decode().replace('\n','')) )
                     elif video>0:
                         print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                        if args.delete_text_video_title: tag_video_title = line.decode().replace('\n','') 
+
+
             if re.search('^Language', line.decode()):
                 if args.show_tracks:
                     #print(line.decode().replace('\n','') )
@@ -153,10 +158,25 @@ def tools(args, finish=False):
             command.append(' --edit track:v1 --set name="{}" '.format(new_name))
             run = True
 
-        if args.deltext_movie_name:
+        if args.delete_text_movie_name:
             _tag_movie_name = re.sub('^(.+?):\s?', '\1', tag_movie_name)
-            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.deltext_movie_name,'')))
+            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'')))
             run = True
+        if args.delete_text_video_title:
+            _tag_video_title = re.sub('^(.+?):\s?', '\1', tag_video_title)
+            command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text_video_title,'')))
+            run = True
+        if args.delete_movie_name:
+            command.append(' --delete title ')
+            run = True
+        if args.delete_video_title:
+            command.append(' --edit track:v1 --delete name ')
+            run = True
+        if args.delete_attachment:
+            command.append(' --delete-attachment mime-type:image/jpeg --delete-attachment 1 ')
+            run = True
+
+
 
 
         if run:
