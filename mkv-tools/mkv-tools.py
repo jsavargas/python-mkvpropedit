@@ -11,7 +11,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.6"
+__version__ = "VERSION 1.0.7"
 
 
 def parse_args():
@@ -21,8 +21,9 @@ def parse_args():
 
                     
     parser.add_argument('-f', '--file', type=str, required=True, help='file mkv to process')
-    parser.add_argument('--show_video_tracks', type=bool, help='show_video_tracks')
-    parser.add_argument('--show_tracks', action='store_true', help='show tracks from mkv')
+    
+    parser.add_argument('--show_tracks', action='store_true', default=True, help='show tracks from mkv')
+    parser.add_argument('--show_video_tracks', action='store_true', help='show_video_tracks')
     parser.add_argument('--show_movie_name', action='store_true', help='show movie name tag from mkv')
     parser.add_argument('--show_mediainfo', '--mediainfo', action='store_true', help='Show mediainfo file')
     parser.add_argument('--show_fullmediainfo', '--fullmediainfo', action='store_true', help='Show mediainfo --full file')
@@ -35,8 +36,10 @@ def parse_args():
     
     parser.add_argument('--del_movie_name', action='store_true', help='require mkvpropedit* delete movie name')
 
-    parser.add_argument('--replace_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
-    parser.add_argument('--replace_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
+    parser.add_argument('-dtmn', '--deltext_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
+    parser.add_argument('-dtvt', '--deltext_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
+    #parser.add_argument('--replace_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
+    #parser.add_argument('--replace_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
 
 
     parser.add_argument('--vn', action='store_true', help='Hidde message "requires --apply"')
@@ -78,8 +81,10 @@ def tools(args, finish=False):
             mediaInfo = os.system('mediainfo "{mediafile}"'.format(mediafile=args.file))
 
         command = []
+        video = 0
         audio = 0
-        subs = 0
+        text = 0
+        head = ""
         run = False
 
         for line in proc.stdout:
@@ -87,25 +92,47 @@ def tools(args, finish=False):
             if re.search('^Movie name', line.decode()):
                 if args.show_tracks: print(line.decode().replace('\n','') )
                 elif args.show_movie_name: print(line.decode().replace('\n','') )
-                elif args.replace_movie_name: print(line.decode().replace('\n','') )
-                if args.replace_movie_name:
+                elif args.deltext_movie_name: print(line.decode().replace('\n','') )
+                if args.deltext_movie_name:
                     tag_movie_name = line.decode().replace('\n','') 
 
             
             if re.search('^Video', line.decode()):
+                print("")
+                video += 1
+                head = line.decode().replace('\n','')
                 if args.show_tracks: print(line.decode().replace('\n','') )
 
             if re.search('^Audio', line.decode()):
-                if args.show_tracks: print(line.decode().replace('\n','') )
+                print("")
+                audio +=1
+                head = line.decode().replace('\n','')
+                #if args.show_tracks: print(line.decode().replace('\n','') )
             
             if re.search('^Text', line.decode()):
-                if args.show_tracks: print(line.decode().replace('\n','') )
+                print("")
+                text +=1
+                head = line.decode().replace('\n','')
+                #if args.show_tracks: print(line.decode().replace('\n','') )
             
             if re.search('^Title', line.decode()):
-                if args.show_tracks: print(line.decode().replace('\n','') )
-            
+                if args.show_tracks: 
+                    if text>0:
+                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    elif audio>0:
+                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    elif video>0:
+                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
             if re.search('^Language', line.decode()):
-                if args.show_tracks:print(line.decode().replace('\n','') )
+                if args.show_tracks:
+                    #print(line.decode().replace('\n','') )
+                    if text>0:
+                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    elif audio>0:
+                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    elif video>0:
+                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+
 
         newLine()
         if finish: 
@@ -126,9 +153,9 @@ def tools(args, finish=False):
             command.append(' --edit track:v1 --set name="{}" '.format(new_name))
             run = True
 
-        if args.replace_movie_name:
+        if args.deltext_movie_name:
             _tag_movie_name = re.sub('^(.+?):\s?', '\1', tag_movie_name)
-            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.replace_movie_name,'')))
+            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.deltext_movie_name,'')))
             run = True
 
 
