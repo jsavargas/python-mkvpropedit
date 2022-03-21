@@ -11,7 +11,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.10"
+__version__ = "VERSION 1.0.9"
 
 
 def parse_args():
@@ -69,13 +69,11 @@ def newLine(crlf=1):
     print("\n"*crlf)
 
 def delete_text_audio(track_number=int, text=str,string_delete=str):
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     text = text.decode().replace('\n','')
     _text = re.sub('^(.+?):\s?', '\1', text)
     return ' --edit track:a{} --set name="{}" '.format(track_number, _text.replace(string_delete,''))
 
 def delete_text_subs(track_number=int, text=str,string_delete=str):
-    print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
     text = text.decode().replace('\n','')
     _text = re.sub('^(.+?):\s?', '\1', text)
     return ' --edit track:a{} --set name="{}" '.format(track_number, _text.replace(string_delete,''))
