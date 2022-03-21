@@ -9,8 +9,10 @@ mkvpropedit --tags all: --delete title --edit track:a1 --delete name --edit trac
 ## mkv-tools -h
 
 ```
-usage: mkv-tools [-h] [-v] -f FILE [--show_tracks] [--show_video_tracks] [--show_movie_name] [--show_mediainfo] [--show_fullmediainfo] [--pymediainfo] [--print_args] [-smnf] [-svtf] [--delete_movie_name]
-                 [--delete_video_title] [--delete_attachment] [-dtmn DELETE_TEXT_MOVIE_NAME] [-dtvt DELETE_TEXT_VIDEO_TITLE] [--vn] [--apply]
+usage: mkv-tools [-h] [-v] -f FILE [--show_tracks] [--show_video_tracks] [--show_movie_name] 
+                 [--show_mediainfo] [--show_fullmediainfo] [--pymediainfo] [--print_args] [-smnf] 
+                 [-svtf] [--delete_movie_name] [--delete_video_title] [--delete_attachment] 
+                 [-dtmn DELETE_TEXT_MOVIE_NAME] [-dtvt DELETE_TEXT_VIDEO_TITLE] [--vn] [--apply]
 
 MKV Tools - Delete Spam.
 

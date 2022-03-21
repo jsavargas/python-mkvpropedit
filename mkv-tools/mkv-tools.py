@@ -22,7 +22,7 @@ def parse_args():
                     
     parser.add_argument('-f', '--file', type=str, required=True, help='file mkv to process')
     
-    parser.add_argument('--show_tracks', action='store_true', default=True, help='show tracks from mkv')
+    parser.add_argument('--show_tracks', action='store_true', help='show tracks from mkv')
     parser.add_argument('--show_video_tracks', action='store_true', help='show_video_tracks')
     parser.add_argument('--show_movie_name', action='store_true', help='show movie name tag from mkv')
     parser.add_argument('--show_mediainfo', '--mediainfo', action='store_true', help='Show mediainfo file')
@@ -34,18 +34,18 @@ def parse_args():
     parser.add_argument('-smnf', '--set_moviename_filename', action='store_true', help='Set filename to movie name')
     parser.add_argument('-svtf', '--set_videotitle_filename', action='store_true', help='Set filename to video title')
     
-    parser.add_argument('--delete_movie_name', action='store_true', help='require mkvpropedit* delete movie name')
-    parser.add_argument('--delete_video_title', action='store_true', help='require mkvpropedit* delete video title')
-    parser.add_argument('--delete_attachment', action='store_true', help='require mkvpropedit* delete attachments')
+    parser.add_argument('--delete_movie_name', action='store_true', help='delete movie name')
+    parser.add_argument('--delete_video_title', action='store_true', help='delete video title')
+    parser.add_argument('--delete_attachment', action='store_true', help='delete attachments')
 
-    parser.add_argument('-dtmn', '--delete_text_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
-    parser.add_argument('-dtvt', '--delete_text_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
-    #parser.add_argument('--replace_movie_name', type=str, help='require mkvpropedit* replace text in movie name')
-    #parser.add_argument('--replace_video_title', type=str, help='require mkvpropedit* replace text in video title') #TODO get video title y replace string
+    parser.add_argument('-dtmn', '--delete_text_movie_name', type=str, help='replace text in movie name')
+    parser.add_argument('-dtvt', '--delete_text_video_title', type=str, help='replace text in video title') #TODO get video title y replace string
+    #parser.add_argument('--replace_movie_name', type=str, help='replace text in movie name')
+    #parser.add_argument('--replace_video_title', type=str, help='replace text in video title') #TODO get video title y replace string
 
 
     parser.add_argument('--vn', action='store_true', help='Hidde message "requires --apply"')
-    parser.add_argument('--apply', action='store_true', help='require mkvpropedit* apply changes')
+    parser.add_argument('--apply', action='store_true', help='apply changes')
 
 
 
@@ -60,7 +60,6 @@ def ifpymediainfo():
         flag_pymediainfo = True
         return True
     except:
-        #print("NO pymediainfo ")
         flag_pymediainfo = False
         return False
 
@@ -90,7 +89,6 @@ def tools(args, finish=False):
         run = False
 
         for line in proc.stdout:
-            #print(line)
             if re.search('^Movie name', line.decode()):
                 if args.show_tracks: print(line.decode().replace('\n','') )
                 elif args.show_movie_name: print(line.decode().replace('\n','') )
@@ -100,19 +98,20 @@ def tools(args, finish=False):
 
             
             if re.search('^Video', line.decode()):
-                print("")
+                #print("")
                 video += 1
                 head = line.decode().replace('\n','')
-                if args.show_tracks: print(line.decode().replace('\n','') )
+                if args.show_tracks: 
+                    print(line.decode().replace('\n','') )
 
             if re.search('^Audio', line.decode()):
-                print("")
+                #print("")
                 audio +=1
                 head = line.decode().replace('\n','')
                 #if args.show_tracks: print(line.decode().replace('\n','') )
             
             if re.search('^Text', line.decode()):
-                print("")
+                #print("")
                 text +=1
                 head = line.decode().replace('\n','')
                 #if args.show_tracks: print(line.decode().replace('\n','') )
@@ -197,10 +196,7 @@ def tools(args, finish=False):
 
 
 
-    newLine()
-    print("="*30)
     return ""
-    exit()
 
 
 
