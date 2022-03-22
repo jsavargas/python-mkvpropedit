@@ -82,7 +82,7 @@ docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest find /tmp 
 - Update mkv-tools.py
 - Added show Cover 
 - Added show Attachments 
-- Added delete text 
+- Added delete text in (movie/video/audio/subtitles)
 - Fixed bugs
 - Added more bugs to fix later (?)
 

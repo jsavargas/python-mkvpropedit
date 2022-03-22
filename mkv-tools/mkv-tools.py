@@ -44,7 +44,7 @@ def parse_args():
     parser.add_argument('-dtvt', '--delete_text_video_title', type=str, help='replace text in video title') #TODO get video title y replace string
     parser.add_argument('--delete_text_audio_title', type=str, help='replace text in audio title') #TODO get video title y replace string
     parser.add_argument('--delete_text_subs_title', type=str, help='replace text in subtitle title') #TODO get video title y replace string
-    parser.add_argument('--delete_text', type=str, help='replace text in subtitle title') #TODO get video title y replace string
+    parser.add_argument('--delete_text', type=str, help='replace text in (movie/video/audio/subtitles)') #TODO get video title y replace string
 
 
     parser.add_argument('--vn', action='store_true', help='Hidde message "requires --apply"')
