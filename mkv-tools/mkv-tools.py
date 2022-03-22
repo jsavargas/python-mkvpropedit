@@ -11,7 +11,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.9"
+__version__ = "VERSION 1.0.10"
 
 
 def parse_args():
@@ -44,6 +44,7 @@ def parse_args():
     parser.add_argument('-dtvt', '--delete_text_video_title', type=str, help='replace text in video title') #TODO get video title y replace string
     parser.add_argument('--delete_text_audio_title', type=str, help='replace text in audio title') #TODO get video title y replace string
     parser.add_argument('--delete_text_subs_title', type=str, help='replace text in subtitle title') #TODO get video title y replace string
+    parser.add_argument('--delete_text', type=str, help='replace text in subtitle title') #TODO get video title y replace string
 
 
     parser.add_argument('--vn', action='store_true', help='Hidde message "requires --apply"')
@@ -69,17 +70,20 @@ def newLine(crlf=1):
     print("\n"*crlf)
 
 def delete_text_audio(track_number=int, text=str,string_delete=str):
-    text = text.decode().replace('\n','')
     _text = re.sub('^(.+?):\s?', '\1', text)
-    return ' --edit track:a{} --set name="{}" '.format(track_number, _text.replace(string_delete,''))
-
+    if _text != _text.replace(string_delete,'').strip():
+        return ' --edit track:a{} --set name="{}" '.format(track_number, _text.replace(string_delete,'').strip())
+    else:
+        return False
 def delete_text_subs(track_number=int, text=str,string_delete=str):
-    text = text.decode().replace('\n','')
     _text = re.sub('^(.+?):\s?', '\1', text)
-    return ' --edit track:a{} --set name="{}" '.format(track_number, _text.replace(string_delete,''))
-
+    if _text != _text.replace(string_delete,'').strip():
+        return ' --edit track:s{} --set name="{}" '.format(track_number, _text.replace(string_delete,'').strip())
+    else:
+        return False
 
 def tools(args, finish=False):
+
     print("="*30)
     print("PROCESS: ",args.file)
 
@@ -100,67 +104,95 @@ def tools(args, finish=False):
         text = 0
         head = ""
         run = False
+        tag_movie_name = ""
 
         for line in proc.stdout:
-            if re.search('^Movie name', line.decode()):
-                if args.show_tracks: print(line.decode().replace('\n','') )
-                elif args.show_movie_name: print(line.decode().replace('\n','') )
-                elif args.delete_text_movie_name: print(line.decode().replace('\n','') )
-                if args.delete_text_movie_name:
-                    tag_movie_name = line.decode().replace('\n','') 
+            line = line.decode().replace('\n','')
+            if re.search('^Movie name', line):
+                if args.show_tracks: print(line )
+                elif args.show_movie_name: print(line )
+                elif args.delete_text_movie_name: print(line )
+                if args.delete_text_movie_name or args.delete_text:
+                    tag_movie_name = line 
 
             
-            if re.search('^Video', line.decode()):
+            if re.search('^Cover', line):
+                if args.show_tracks: print(line )
+
+            if re.search('^Attachments', line):
+                if args.show_tracks: print(line )
+
+            if re.search('^Video', line):
                 #print("")
                 video += 1
-                head = line.decode().replace('\n','')
-                if args.show_tracks: 
-                    print(line.decode().replace('\n','') )
+                head = line
+                if args.show_tracks: print(line )
 
-            if re.search('^Audio', line.decode()):
+            if re.search('^Audio', line):
                 #print("")
                 audio +=1
-                head = line.decode().replace('\n','')
-                #if args.show_tracks: print(line.decode().replace('\n','') )
+                head = line
+                #if args.show_tracks: print(line )
             
-            if re.search('^Text', line.decode()):
+            if re.search('^Text', line):
                 #print("")
                 text +=1
-                head = line.decode().replace('\n','')
-                #if args.show_tracks: print(line.decode().replace('\n','') )
+                head = line
+                #if args.show_tracks: print(line )
             
-            if re.search('^Title', line.decode()):
+            if re.search('^Title', line):
                 if text>0:
-                    if args.show_tracks: print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    if args.show_tracks: print("{} >> {}".format(head, line) )
                     if args.delete_subs_title or args.delete_tracks:
                         command.append(f'--edit track:s{text} --delete name ')
                         run = True
                     if args.delete_text_subs_title: 
-                        run = True
-                        command.append(delete_text_subs(text,line,args.delete_text_subs_title) )
+                        resp = delete_text_subs(text,line,args.delete_text_subs_title) 
+                        if resp: 
+                            command.append(delete_text_subs(text,line,args.delete_text_subs_title) )
+                            run = True
+                    if args.delete_text: 
+                        resp = delete_text_subs(text,line,args.delete_text) 
+                        if resp: 
+                            command.append(delete_text_subs(text,line,args.delete_text) )
+                            run = True
                 elif audio>0:
-                    if args.show_tracks: print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                    if args.show_tracks: print("{} >> {}".format(head, line) )
                     if args.delete_audio_title or args.delete_tracks:
                         command.append(f'--edit track:a{audio} --delete name ')
                         run = True
                     if args.delete_text_audio_title: 
-                        run = True
+                        resp = delete_text_audio(audio,line,args.delete_text_audio_title) 
                         command.append(delete_text_audio(audio,line,args.delete_text_audio_title) )
-
+                        if resp: 
+                            command.append(delete_text_audio(audio,line,args.delete_text) )
+                            run = True
+                    if args.delete_text: 
+                        resp = delete_text_audio(audio,line,args.delete_text)
+                        if resp: 
+                            command.append(delete_text_audio(audio,line,args.delete_text) )
+                            run = True
                 elif video>0:
-                    if args.show_tracks: print("{} >> {}".format(head, line.decode().replace('\n','')) )
-                    if args.delete_text_video_title: tag_video_title = line.decode().replace('\n','') 
+                    if args.show_tracks: print("{} >> {}".format(head, line) )
+                    if args.delete_text_video_title: 
+                        _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
+                        command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text_video_title,'').strip()))
+                        run = True
+                    if args.delete_text:
+                        _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
+                        command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text,'').strip()))
+                        run = True
 
 
-            if re.search('^Language', line.decode()):
+            if re.search('^Language', line):
                 if args.show_tracks:
-                    #print(line.decode().replace('\n','') )
+                    #print(line )
                     if text>0:
-                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                        print("{} >> {}".format(head, line) )
                     elif audio>0:
-                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                        print("{} >> {}".format(head, line) )
                     elif video>0:
-                        print("{} >> {}".format(head, line.decode().replace('\n','')) )
+                        print("{} >> {}".format(head, line) )
 
 
         newLine()
@@ -171,24 +203,22 @@ def tools(args, finish=False):
         if args.set_moviename_filename:
             pattern = re.compile(".mkv", re.IGNORECASE)
             new_name = pattern.sub("", os.path.basename(args.file))
-
             command.append(' --set title="{}" '.format(new_name))
             run = True
 
         if args.set_videotitle_filename:
             pattern = re.compile(".mkv", re.IGNORECASE)
             new_name = pattern.sub("", os.path.basename(args.file))
-
             command.append(' --edit track:v1 --set name="{}" '.format(new_name))
             run = True
 
-        if args.delete_text_movie_name:
+        if tag_movie_name and args.delete_text_movie_name:
             _tag_movie_name = re.sub('^(.+?):\s?', '\1', tag_movie_name)
-            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'')))
+            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'').strip()))
             run = True
-        if args.delete_text_video_title:
-            _tag_video_title = re.sub('^(.+?):\s?', '\1', tag_video_title)
-            command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text_video_title,'')))
+        if tag_movie_name and args.delete_text:
+            _tag_movie_name = re.sub('^(.+?):\s?', '\1', tag_movie_name)
+            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text,'').strip()))
             run = True
         if args.delete_movie_name or args.delete_tracks:
             command.append(' --delete title ')
