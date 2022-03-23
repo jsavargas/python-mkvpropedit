@@ -6,3 +6,6 @@ leeme.txt
 
 
 *.log
+
+#Docker
+docker-compose.yml
