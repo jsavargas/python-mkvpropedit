@@ -1,7 +1,8 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 '''
-
+curl -sL https://raw.githubusercontent.com/jsavargas/python-mkvpropedit/master/mkv-tools/mkv-tools.py -o /usr/local/bin/mkv-tools && chmod +x /usr/local/bin/mkv-tools
 
 '''
 
@@ -11,7 +12,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.11"
+__version__ = "VERSION 1.0.12"
 
 
 def parse_args():
