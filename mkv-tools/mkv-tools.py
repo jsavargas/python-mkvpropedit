@@ -119,7 +119,7 @@ def tools(args, finish=False):
                     run = True
                 if args.delete_text:
                     _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
-                    command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text,'').strip()))
+                    command.append(" --set title='{}' ".format(_tag_movie_name.replace(args.delete_text,'').strip()))
                     run = True
 
             if re.search('^Cover', line):
@@ -182,7 +182,7 @@ def tools(args, finish=False):
                     if args.show_tracks: print("{} >> {}".format(head, line) )
                     if args.delete_text_video_title: 
                         _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
-                        command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text_video_title,'').strip()))
+                        command.append(" --edit track:v1 --set name='{}' ".format(_tag_video_title.replace(args.delete_text_video_title,'').strip()))
                         run = True
                     if args.delete_text:
                         _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
