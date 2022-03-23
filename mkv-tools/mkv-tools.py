@@ -12,7 +12,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.12"
+__version__ = "VERSION 1.0.14"
 
 
 def parse_args():
@@ -22,30 +22,30 @@ def parse_args():
                     
     parser.add_argument('-f', '--file', type=str, required=True, help='file mkv to process')
     
-    parser.add_argument('-st', '--show_tracks', action='store_true', help='show tracks from mkv')
-    parser.add_argument('-sv', '--show_video_tracks', action='store_true', help='show_video_tracks')
-    parser.add_argument('-sm', '--show_movie_name', action='store_true', help='show movie name tag from mkv')
-    parser.add_argument('--show_mediainfo', '--mediainfo', action='store_true', help='Show mediainfo file')
-    parser.add_argument('--show_fullmediainfo', '--fullmediainfo', action='store_true', help='Show mediainfo --full file')
+    parser.add_argument('-st', '--show-tracks', action='store_true', default=True, help='show tracks from mkv')
+    parser.add_argument('-sv', '--show-video-tracks', action='store_true', help='show_video_tracks')
+    parser.add_argument('-sm', '--show-movie-name', action='store_true', help='show movie name tag from mkv')
+    parser.add_argument('--show-mediainfo', '--mediainfo', action='store_true', help='Show mediainfo file')
+    parser.add_argument('--show-fullmediainfo', '--fullmediainfo', action='store_true', help='Show mediainfo --full file')
     parser.add_argument('--pymediainfo', action='store_true', help='Use pymediainfo')
     
-    parser.add_argument('--print_args', action='store_true', help='dev use, print arguments')
+    parser.add_argument('--print-args', action='store_true', help='dev use, print arguments')
 
-    parser.add_argument('-smnf', '--set_moviename_filename', action='store_true', help='Set filename to movie name')
-    parser.add_argument('-svtf', '--set_videotitle_filename', action='store_true', help='Set filename to video title')
+    parser.add_argument('-smnf', '--set-moviename-filename', action='store_true', help='Set filename to movie name')
+    parser.add_argument('-svtf', '--set-videotitle-filename', action='store_true', help='Set filename to video title')
     
-    parser.add_argument('-dm', '--delete_movie_name', action='store_true', help='delete movie name')
-    parser.add_argument('-dv', '--delete_video_title', action='store_true', help='delete video title')
-    parser.add_argument('-da', '--delete_audio_title', action='store_true', help='delete audio title')
-    parser.add_argument('-ds', '--delete_subs_title', action='store_true', help='delete subtitle title')
-    parser.add_argument('-dat', '--delete_attachment', action='store_true', help='delete attachments')
-    parser.add_argument('-dt', '--delete_tracks', action='store_true', help='delete tracks titles')
+    parser.add_argument('-dm', '--delete-movie-name', action='store_true', help='delete movie name')
+    parser.add_argument('-dv', '--delete-video-title', action='store_true', help='delete video title')
+    parser.add_argument('-da', '--delete-audio-title', action='store_true', help='delete audio title')
+    parser.add_argument('-ds', '--delete-subs-title', action='store_true', help='delete subtitle title')
+    parser.add_argument('-dat', '--delete-attachment', action='store_true', help='delete attachments')
+    parser.add_argument('-dt', '--delete-tracks', action='store_true', help='delete tracks titles')
 
-    parser.add_argument('-dtmn', '--delete_text_movie_name', type=str, help='replace text in movie name')
-    parser.add_argument('-dtvt', '--delete_text_video_title', type=str, help='replace text in video title') #TODO get video title y replace string
-    parser.add_argument('--delete_text_audio_title', type=str, help='replace text in audio title') #TODO get video title y replace string
-    parser.add_argument('--delete_text_subs_title', type=str, help='replace text in subtitle title') #TODO get video title y replace string
-    parser.add_argument('--delete_text', type=str, help='replace text in (movie/video/audio/subtitles)') #TODO get video title y replace string
+    parser.add_argument('-dtmn', '--delete-text-movie-name', type=str, help='replace text in movie name')
+    parser.add_argument('-dtvt', '--delete-text-video-title', type=str, help='replace text in video title') #TODO get video title y replace string
+    parser.add_argument('--delete-text-audio-title', type=str, help='replace text in audio title') #TODO get video title y replace string
+    parser.add_argument('--delete-text-subs-title', type=str, help='replace text in subtitle title') #TODO get video title y replace string
+    parser.add_argument('--delete-text', type=str, help='replace text in (movie/video/audio/subtitles)') #TODO get video title y replace string
 
 
     parser.add_argument('--vn', action='store_true', help='Hidde message "requires --apply"')
@@ -92,6 +92,11 @@ def tools(args, finish=False):
     if args.pymediainfo and ifpymediainfo():
         print("use pymediainfo")
     else:
+        
+        if not os.path.exists(args.file): 
+            print("File not exists")
+            exit()
+
         proc = subprocess.Popen('mediainfo "{mediafile}"'.format(mediafile=args.file), shell=True, stdout=subprocess.PIPE)
     
         if args.show_fullmediainfo: 
@@ -120,6 +125,15 @@ def tools(args, finish=False):
                 if args.delete_text:
                     _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
                     command.append(" --set title='{}' ".format(_tag_movie_name.replace(args.delete_text,'').strip()))
+                    run = True
+
+                if args.set_moviename_filename:
+                    pattern = re.compile(".mkv", re.IGNORECASE)
+                    new_name = pattern.sub("", os.path.basename(args.file))
+                    command.append(' --set title="{}" '.format(new_name))
+                    run = True
+                if args.delete_movie_name or args.delete_tracks:
+                    command.append(' --delete title ')
                     run = True
 
             if re.search('^Cover', line):
@@ -206,18 +220,10 @@ def tools(args, finish=False):
             print("\n\n")
             return
 
-        if args.set_moviename_filename:
-            pattern = re.compile(".mkv", re.IGNORECASE)
-            new_name = pattern.sub("", os.path.basename(args.file))
-            command.append(' --set title="{}" '.format(new_name))
-            run = True
         if args.set_videotitle_filename:
             pattern = re.compile(".mkv", re.IGNORECASE)
             new_name = pattern.sub("", os.path.basename(args.file))
             command.append(' --edit track:v1 --set name="{}" '.format(new_name))
-            run = True
-        if args.delete_movie_name or args.delete_tracks:
-            command.append(' --delete title ')
             run = True
         if args.delete_video_title or args.delete_tracks:
             command.append(' --edit track:v1 --delete name ')
