@@ -11,7 +11,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.10"
+__version__ = "VERSION 1.0.11"
 
 
 def parse_args():
@@ -112,10 +112,15 @@ def tools(args, finish=False):
                 if args.show_tracks: print(line )
                 elif args.show_movie_name: print(line )
                 elif args.delete_text_movie_name: print(line )
-                if args.delete_text_movie_name or args.delete_text:
-                    tag_movie_name = line 
+                if args.delete_text_movie_name:
+                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'').strip()))
+                    run = True
+                if args.delete_text:
+                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text,'').strip()))
+                    run = True
 
-            
             if re.search('^Cover', line):
                 if args.show_tracks: print(line )
 
@@ -205,20 +210,10 @@ def tools(args, finish=False):
             new_name = pattern.sub("", os.path.basename(args.file))
             command.append(' --set title="{}" '.format(new_name))
             run = True
-
         if args.set_videotitle_filename:
             pattern = re.compile(".mkv", re.IGNORECASE)
             new_name = pattern.sub("", os.path.basename(args.file))
             command.append(' --edit track:v1 --set name="{}" '.format(new_name))
-            run = True
-
-        if tag_movie_name and args.delete_text_movie_name:
-            _tag_movie_name = re.sub('^(.+?):\s?', '\1', tag_movie_name)
-            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'').strip()))
-            run = True
-        if tag_movie_name and args.delete_text:
-            _tag_movie_name = re.sub('^(.+?):\s?', '\1', tag_movie_name)
-            command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text,'').strip()))
             run = True
         if args.delete_movie_name or args.delete_tracks:
             command.append(' --delete title ')

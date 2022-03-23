@@ -78,6 +78,9 @@ docker run --rm -it -v "$(pwd):/storage" jsavargas/mkvpropedit:latest find /tmp 
 
 ## **Changelog:**
 
+**v1.0.11 (22/03/2022/):**
+- Update mkv-tools.py
+
 **v1.0.10 (22/03/2022/):**
 - Update mkv-tools.py
 - Added show Cover 
