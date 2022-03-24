@@ -242,10 +242,10 @@ def tools(args, finish=False):
             
             if args.apply: 
                 rest = os.system(mkvpropedit)
-                if rest == 0: 
-                    print("Success")
+                if rest == 256: 
+                    print(f"Success {rest}")
                     tools(args,finish=True)
-                else: print("ERROR")
+                else: print(f"ERROR {rest}")
             else:
                 if not args.vn:
                     print(" =>"," ***********  requires --apply to apply mkvpropedit changes  ***********")
