@@ -12,7 +12,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.14"
+__version__ = "VERSION 1.0.15"
 
 
 def parse_args():
@@ -127,14 +127,6 @@ def tools(args, finish=False):
                     command.append(" --set title='{}' ".format(_tag_movie_name.replace(args.delete_text,'').strip()))
                     run = True
 
-                if args.set_moviename_filename:
-                    pattern = re.compile(".mkv", re.IGNORECASE)
-                    new_name = pattern.sub("", os.path.basename(args.file))
-                    command.append(' --set title="{}" '.format(new_name))
-                    run = True
-                if args.delete_movie_name or args.delete_tracks:
-                    command.append(' --delete title ')
-                    run = True
 
             if re.search('^Cover', line):
                 if args.show_tracks: print(line )
@@ -219,6 +211,15 @@ def tools(args, finish=False):
         if finish: 
             print("\n\n")
             return
+        
+        if args.set_moviename_filename:
+            pattern = re.compile(".mkv", re.IGNORECASE)
+            new_name = pattern.sub("", os.path.basename(args.file))
+            command.append(' --set title="{}" '.format(new_name))
+            run = True
+        if args.delete_movie_name or args.delete_tracks:
+            command.append(' --delete title ')
+            run = True
 
         if args.set_videotitle_filename:
             pattern = re.compile(".mkv", re.IGNORECASE)
