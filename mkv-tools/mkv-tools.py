@@ -12,7 +12,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.15"
+__version__ = "VERSION 1.0.16"
 
 
 def parse_args():
@@ -38,8 +38,14 @@ def parse_args():
     parser.add_argument('-dv', '--delete-video-title', action='store_true', help='delete video title')
     parser.add_argument('-da', '--delete-audio-title', action='store_true', help='delete audio title')
     parser.add_argument('-ds', '--delete-subs-title', action='store_true', help='delete subtitle title')
-    parser.add_argument('-dat', '--delete-attachment', action='store_true', help='delete attachments')
     parser.add_argument('-dt', '--delete-tracks', action='store_true', help='delete tracks titles')
+    parser.add_argument('-dal', '--delete-all', action='store_true', help='delete tracks titles')
+    parser.add_argument('-dat', '--delete-attachment', action='store_true', help='delete attachments')
+            
+    parser.add_argument('-dtmn', '--delete-text-movie-name', type=str, help='replace text in movie name')
+    parser.add_argument('-dtvt', '--delete-text-video-title', type=str, help='replace text in video title') #TODO get video title', action='store_true', help='delete tracks titles')
+    parser.add_argument('-dal', '--delete-all', action='store_true', help='delete tracks titles')
+    parser.add_argument('-dat', '--delete-attachment', action='store_true', help='delete attachments')
 
     parser.add_argument('-dtmn', '--delete-text-movie-name', type=str, help='replace text in movie name')
     parser.add_argument('-dtvt', '--delete-text-video-title', type=str, help='replace text in video title') #TODO get video title y replace string
@@ -155,7 +161,7 @@ def tools(args, finish=False):
             if re.search('^Title', line):
                 if text>0:
                     if args.show_tracks: print("{} >> {}".format(head, line) )
-                    if args.delete_subs_title or args.delete_tracks:
+                    if args.delete_subs_title or args.delete_tracks or args.delete_all:
                         command.append(f'--edit track:s{text} --delete name ')
                         run = True
                     if args.delete_text_subs_title: 
@@ -163,7 +169,7 @@ def tools(args, finish=False):
                         if resp: 
                             command.append(delete_text_subs(text,line,args.delete_text_subs_title) )
                             run = True
-                    if args.delete_text: 
+                    if args.delete_text or args.delete_all: 
                         resp = delete_text_subs(text,line,args.delete_text) 
                         if resp: 
                             command.append(delete_text_subs(text,line,args.delete_text) )
@@ -179,7 +185,7 @@ def tools(args, finish=False):
                         if resp: 
                             command.append(delete_text_audio(audio,line,args.delete_text) )
                             run = True
-                    if args.delete_text: 
+                    if args.delete_text or args.delete_all: 
                         resp = delete_text_audio(audio,line,args.delete_text)
                         if resp: 
                             command.append(delete_text_audio(audio,line,args.delete_text) )
@@ -190,7 +196,7 @@ def tools(args, finish=False):
                         _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
                         command.append(" --edit track:v1 --set name='{}' ".format(_tag_video_title.replace(args.delete_text_video_title,'').strip()))
                         run = True
-                    if args.delete_text:
+                    if args.delete_text or args.delete_all:
                         _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
                         command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text,'').strip()))
                         run = True
@@ -217,7 +223,7 @@ def tools(args, finish=False):
             new_name = pattern.sub("", os.path.basename(args.file))
             command.append(' --set title="{}" '.format(new_name))
             run = True
-        if args.delete_movie_name or args.delete_tracks:
+        if args.delete_movie_name or args.delete_tracks or args.delete_all:
             command.append(' --delete title ')
             run = True
 
@@ -226,10 +232,10 @@ def tools(args, finish=False):
             new_name = pattern.sub("", os.path.basename(args.file))
             command.append(' --edit track:v1 --set name="{}" '.format(new_name))
             run = True
-        if args.delete_video_title or args.delete_tracks:
+        if args.delete_video_title or args.delete_tracks or args.delete_all:
             command.append(' --edit track:v1 --delete name ')
             run = True
-        if args.delete_attachment or args.delete_tracks:
+        if args.delete_attachment or args.delete_tracks or args.delete_all:
             command.append(' --delete-attachment mime-type:image/jpeg --delete-attachment 1 ')
             run = True
 
