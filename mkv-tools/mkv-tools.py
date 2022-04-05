@@ -12,12 +12,12 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.16"
+__version__ = "VERSION 1.0.17"
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="MKV Tools - Delete Spam.")
-    parser.add_argument('-V','--version', action='version', version="%(prog)s " + __version__)
+    parser.add_argument('-v','--version', action='version', version="%(prog)s " + __version__)
 
                     
     parser.add_argument('-f', '--file', type=str, required=True, help='file mkv to process')
