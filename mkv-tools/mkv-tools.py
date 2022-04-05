@@ -41,11 +41,6 @@ def parse_args():
     parser.add_argument('-dt', '--delete-tracks', action='store_true', help='delete tracks titles')
     parser.add_argument('-dal', '--delete-all', action='store_true', help='delete tracks titles')
     parser.add_argument('-dat', '--delete-attachment', action='store_true', help='delete attachments')
-            
-    parser.add_argument('-dtmn', '--delete-text-movie-name', type=str, help='replace text in movie name')
-    parser.add_argument('-dtvt', '--delete-text-video-title', type=str, help='replace text in video title') #TODO get video title', action='store_true', help='delete tracks titles')
-    parser.add_argument('-dal', '--delete-all', action='store_true', help='delete tracks titles')
-    parser.add_argument('-dat', '--delete-attachment', action='store_true', help='delete attachments')
 
     parser.add_argument('-dtmn', '--delete-text-movie-name', type=str, help='replace text in movie name')
     parser.add_argument('-dtvt', '--delete-text-video-title', type=str, help='replace text in video title') #TODO get video title y replace string
@@ -169,14 +164,14 @@ def tools(args, finish=False):
                         if resp: 
                             command.append(delete_text_subs(text,line,args.delete_text_subs_title) )
                             run = True
-                    if args.delete_text or args.delete_all: 
+                    if args.delete_text: 
                         resp = delete_text_subs(text,line,args.delete_text) 
                         if resp: 
                             command.append(delete_text_subs(text,line,args.delete_text) )
                             run = True
                 elif audio>0:
                     if args.show_tracks: print("{} >> {}".format(head, line) )
-                    if args.delete_audio_title or args.delete_tracks:
+                    if args.delete_audio_title or args.delete_tracks or args.delete_all:
                         command.append(f'--edit track:a{audio} --delete name ')
                         run = True
                     if args.delete_text_audio_title: 
@@ -185,7 +180,7 @@ def tools(args, finish=False):
                         if resp: 
                             command.append(delete_text_audio(audio,line,args.delete_text) )
                             run = True
-                    if args.delete_text or args.delete_all: 
+                    if args.delete_text: 
                         resp = delete_text_audio(audio,line,args.delete_text)
                         if resp: 
                             command.append(delete_text_audio(audio,line,args.delete_text) )
@@ -196,7 +191,7 @@ def tools(args, finish=False):
                         _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
                         command.append(" --edit track:v1 --set name='{}' ".format(_tag_video_title.replace(args.delete_text_video_title,'').strip()))
                         run = True
-                    if args.delete_text or args.delete_all:
+                    if args.delete_text:
                         _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
                         command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text,'').strip()))
                         run = True
@@ -221,10 +216,10 @@ def tools(args, finish=False):
         if args.set_moviename_filename:
             pattern = re.compile(".mkv", re.IGNORECASE)
             new_name = pattern.sub("", os.path.basename(args.file))
-            command.append(' --set title="{}" '.format(new_name))
+            command.insert(0,' --set title="{}" '.format(new_name))
             run = True
         if args.delete_movie_name or args.delete_tracks or args.delete_all:
-            command.append(' --delete title ')
+            command.insert(0,' --delete title ')
             run = True
 
         if args.set_videotitle_filename:
@@ -276,4 +271,3 @@ if __name__ == '__main__':
 
     except:
         pass
-
