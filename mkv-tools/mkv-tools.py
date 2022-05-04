@@ -121,8 +121,8 @@ def tools(args, finish=False):
                 elif args.delete_text_movie_name: print(line )
                 if args.delete_text_movie_name:
                     _tag_movie_name = re.sub('^.+?:\s(.*)', r"\1", line)
-                    print(f"line[{line}]")
-                    print(f"_tag_movie_name[{_tag_movie_name}]")
+                    #print(f"line[{line}]")
+                    #print(f"_tag_movie_name[{_tag_movie_name}]")
                     command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'').strip()))
                     run = True
                 if args.delete_text:
