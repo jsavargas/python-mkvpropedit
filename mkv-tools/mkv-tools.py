@@ -12,7 +12,7 @@ import sys
 import argparse
 import subprocess
 
-__version__ = "VERSION 1.0.17"
+__version__ = "VERSION 1.0.19"
 
 
 def parse_args():
@@ -72,13 +72,13 @@ def newLine(crlf=1):
     print("\n"*crlf)
 
 def delete_text_audio(track_number=int, text=str,string_delete=str):
-    _text = re.sub('^(.+?):\s?', '\1', text)
+    _text = re.sub('^.+?:\s?(.*)', r'\1', text)
     if _text != _text.replace(string_delete,'').strip():
         return ' --edit track:a{} --set name="{}" '.format(track_number, _text.replace(string_delete,'').strip())
     else:
         return False
 def delete_text_subs(track_number=int, text=str,string_delete=str):
-    _text = re.sub('^(.+?):\s?', '\1', text)
+    _text = re.sub('^.+?:\s?(.*)', r'\1', text)
     if _text != _text.replace(string_delete,'').strip():
         return ' --edit track:s{} --set name="{}" '.format(track_number, _text.replace(string_delete,'').strip())
     else:
@@ -120,11 +120,13 @@ def tools(args, finish=False):
                 elif args.show_movie_name: print(line )
                 elif args.delete_text_movie_name: print(line )
                 if args.delete_text_movie_name:
-                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    _tag_movie_name = re.sub('^.+?:\s(.*)', r"\1", line)
+                    print(f"line[{line}]")
+                    print(f"_tag_movie_name[{_tag_movie_name}]")
                     command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'').strip()))
                     run = True
                 if args.delete_text:
-                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    _tag_movie_name = re.sub('^.+?:\s(.*)', r"\1", line)
                     command.append(" --set title='{}' ".format(_tag_movie_name.replace(args.delete_text,'').strip()))
                     run = True
 
@@ -188,11 +190,11 @@ def tools(args, finish=False):
                 elif video>0:
                     if args.show_tracks: print("{} >> {}".format(head, line) )
                     if args.delete_text_video_title: 
-                        _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
+                        _tag_video_title = re.sub('^.+?:\s?(.*)', r'\1', line)
                         command.append(" --edit track:v1 --set name='{}' ".format(_tag_video_title.replace(args.delete_text_video_title,'').strip()))
                         run = True
                     if args.delete_text:
-                        _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
+                        _tag_video_title = re.sub('^.+?:\s?(.*)', r'\1', line)
                         command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text,'').strip()))
                         run = True
 
