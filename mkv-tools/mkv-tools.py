@@ -119,11 +119,13 @@ def tools(args, finish=False):
                 elif args.show_movie_name: print(line )
                 elif args.delete_text_movie_name: print(line )
                 if args.delete_text_movie_name:
-                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    pos_dospuntos=line.find(":")
+                    _tag_movie_name = line[pos_dospuntos+1:].strip()
                     command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'').strip()))
                     run = True
                 if args.delete_text:
-                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    pos_dospuntos=line.find(":")
+                    _tag_movie_name = line[pos_dospuntos+1:].strip()
                     command.append(" --set title='{}' ".format(_tag_movie_name.replace(args.delete_text,'').strip()))
                     run = True
 
