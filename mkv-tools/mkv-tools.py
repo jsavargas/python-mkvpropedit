@@ -71,13 +71,15 @@ def newLine(crlf=1):
     print("\n"*crlf)
 
 def delete_text_audio(track_number=int, text=str,string_delete=str):
-    _text = re.sub('^(.+?):\s?', '\1', text)
+    pos_dospuntos=text.find(":")
+    _text = line[pos_dospuntos+1:].strip()                         
     if _text != _text.replace(string_delete,'').strip():
         return ' --edit track:a{} --set name="{}" '.format(track_number, _text.replace(string_delete,'').strip())
     else:
         return False
 def delete_text_subs(track_number=int, text=str,string_delete=str):
-    _text = re.sub('^(.+?):\s?', '\1', text)
+    pos_dospuntos=text.find(":")
+    _text = line[pos_dospuntos+1:].strip() 
     if _text != _text.replace(string_delete,'').strip():
         return ' --edit track:s{} --set name="{}" '.format(track_number, _text.replace(string_delete,'').strip())
     else:
@@ -114,45 +116,47 @@ def tools(args, finish=False):
 
         for line in proc.stdout:
             line = line.decode().replace('\n','')
-            if re.search('^Movie name', line):
+            if line[0:10]=="Movie name":
                 if args.show_tracks: print(line )
                 elif args.show_movie_name: print(line )
                 elif args.delete_text_movie_name: print(line )
                 if args.delete_text_movie_name:
-                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    pos_dospuntos=line.find(":")
+                    _tag_movie_name = line[pos_dospuntos+1:].strip()
                     command.append(' --set title="{}" '.format(_tag_movie_name.replace(args.delete_text_movie_name,'').strip()))
                     run = True
                 if args.delete_text:
-                    _tag_movie_name = re.sub('^(.+?):\s?', '\1', line)
+                    pos_dospuntos=line.find(":")
+                    _tag_movie_name = line[pos_dospuntos+1:].strip()
                     command.append(" --set title='{}' ".format(_tag_movie_name.replace(args.delete_text,'').strip()))
                     run = True
 
 
-            if re.search('^Cover', line):
+            if line[:5]=="Cover":
                 if args.show_tracks: print(line )
 
-            if re.search('^Attachments', line):
+            if line[:11]=="Attachments":
                 if args.show_tracks: print(line )
 
-            if re.search('^Video', line):
+            if line[:5]=="Video":
                 #print("")
                 video += 1
                 head = line
                 if args.show_tracks: print(line )
 
-            if re.search('^Audio', line):
+            if line[:5]=="Audio":
                 #print("")
                 audio +=1
                 head = line
                 #if args.show_tracks: print(line )
             
-            if re.search('^Text', line):
+            if line[:4]=="Text":
                 #print("")
                 text +=1
                 head = line
                 #if args.show_tracks: print(line )
             
-            if re.search('^Title', line):
+            if line[:5]=="Title":
                 if text>0:
                     if args.show_tracks: print("{} >> {}".format(head, line) )
                     if args.delete_subs_title or args.delete_tracks:
@@ -186,17 +190,20 @@ def tools(args, finish=False):
                             run = True
                 elif video>0:
                     if args.show_tracks: print("{} >> {}".format(head, line) )
-                    if args.delete_text_video_title: 
-                        _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
+                    if args.delete_text_video_title:
+                        pos_dospuntos=line.find(":")
+                        _tag_video_title = line[pos_dospuntos+1:].strip() 
+                        
                         command.append(" --edit track:v1 --set name='{}' ".format(_tag_video_title.replace(args.delete_text_video_title,'').strip()))
                         run = True
                     if args.delete_text:
-                        _tag_video_title = re.sub('^(.+?):\s?', '\1', line)
+                        pos_dospuntos=line.find(":")
+                        _tag_video_title = line[pos_dospuntos+1:].strip() 
                         command.append(' --edit track:v1 --set name="{}" '.format(_tag_video_title.replace(args.delete_text,'').strip()))
                         run = True
 
 
-            if re.search('^Language', line):
+            if line[:8]=="Language":
                 if args.show_tracks:
                     #print(line )
                     if text>0:
